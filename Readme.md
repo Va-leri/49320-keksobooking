@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Валерия](https://up.htmlacademy.ru/javascript/9/user/49320).
-* Наставник: `Неизвестно`.
+* Наставник: `Алексей Сафин`.
 
 ---
 
