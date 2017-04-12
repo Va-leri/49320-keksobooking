@@ -28,7 +28,7 @@ var offerCheckins = [
 
 var offerCheckouts = offerCheckins;
 
-var offerFeatures = [
+var featuresList = [
   'wifi', 
   'dishwasher', 
   'parking', 
@@ -42,7 +42,7 @@ var appartments = [];
 for (var i = 0; i < offerTitles.length; i++) {
   appartments[i] = {
     'author' : {
-      'avatar' : 'img/avatars/user{{0' + (i+1) + '}}.png'
+      'avatar' : 'img/avatars/user0' + (i+1) + '.png'
     },
     'offer' : {
       'title' : offerTitles[i],
@@ -53,13 +53,48 @@ for (var i = 0; i < offerTitles.length; i++) {
       'guests' : Math.floor((1 - Math.random()) * 100),
       'checkin' : offerCheckins[Math.floor(Math.random() * 3)],
       'checkout' : offerCheckouts[Math.floor(Math.random() * 3)],
-      'features' : '',
+      'features' : [],
       'description' : '',
       'photos' : []
     },
     'location' : {
-      'x' : 5,
-      'y' : 5
+      'x' : getRandomInteger(300, 900),
+      'y' : getRandomInteger(100, 500)
     }
-  }
+  };
+  
+  for (var k = getRandomInteger(0, 5), j = 0; k < featuresList.length; k = k + getRandomInteger(1, featuresList.length - k), j++ ) {
+    appartments[i].offer.features[j] = featuresList[k];
+  };
 }
+
+/*var pin = document.createElement('div');
+var avatar = document.createElement('img');
+pin.className = 'pin';
+pin.setAttribute('style', 'left: {{location.x}}px; top: {{location.y}}px');
+pin.appendChild(avatar);
+avatar.className = 'rounded';
+avatar.setAttribute('')*/
+var fragment = document.createDocumentFragment();
+var pinTemplate = document.querySelector('.pin');
+for (var i = 0; i < offerTitles.length; i++) {
+  var pin = pinTemplate.cloneNode(true);
+  pin.setAttribute('style', 'left: ' + appartments[i].location.x +'px; top: ' + appartments[i].location.y +'px');
+  var avatar = pin.querySelector('img');
+  avatar.setAttribute('src', appartments[i].author.avatar);
+  fragment.appendChild(pin);
+}
+
+document.querySelector('.tokyo__pin-map').appendChild(fragment);
+
+var dialogTemplate = document.querySelector('#lodge-template').content;
+var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true);
+var firstElement = appartments[0];
+dialogPanel.querySelector('.lodge__title').textContent = firstElement.offer.title;
+dialogPanel.querySelector('.lodge__address').textContent = firstElement.offer.address;  
+
+document.replaceChild(dialogPanel, querySelector('.dialog__panel'));
+
+
+
+
