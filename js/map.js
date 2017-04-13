@@ -47,7 +47,7 @@ for (var i = 0; i < offerTitles.length; i++) {
     'offer' : {
       'title' : offerTitles[i],
       'address' : '',
-      'price' : getRandomInteger(1000, 1000000),
+      'price' : getRandomInteger(10, 10000) * 100,
       'type' : offerTypes[getRandomInteger(0, 2)],
       'rooms' : getRandomInteger(1, 5),
       'guests' : Math.floor((1 - Math.random()) * 100),
@@ -79,12 +79,13 @@ for (var i = 0; i < offerTitles.length; i++) {
   avatar.setAttribute('src', appartments[i].author.avatar);
   fragment.appendChild(pin);
 }
+pinTemplate.setAttribute('style', 'display: none;');
 
 document.querySelector('.tokyo__pin-map').appendChild(fragment);
 
 var dialogTemplate = document.querySelector('#lodge-template').content;
 var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true);
-var firstElement = appartments[0];
+var selectedAppartments = appartments[0];
 
 var getOfferType = function(type) {
   var type;
@@ -99,25 +100,31 @@ var getOfferType = function(type) {
   return type;
 };
 
-
+var featuresFragment = document.createDocumentFragment();
+var feature;
 var getOfferFeatures = function() {
-  for (var i = 0; i < firstElement.offer.features.length; i++) {
-    return '<span class="feature__image feature__image--' + firstElement.offer.features[i] + '></span>';
+  for (var i = 0; i < selectedAppartments.offer.features.length; i++) {
+    feature = document.createElement('span');
+    feature.classList.add('feature__image');
+    feature.classList.add('feature__image--' + selectedAppartments.offer.features[i]);
+    featuresFragment.appendChild(feature);
   };
-}
+  return featuresFragment;
+};
 
-dialogPanel.querySelector('.lodge__title').textContent = firstElement.offer.title;
-dialogPanel.querySelector('.lodge__address').textContent = firstElement.offer.address;  
-dialogPanel.querySelector('.lodge__price').innerHTML = firstElement.offer.price + ' &#x20bd;/ночь';
-dialogPanel.querySelector('.lodge__type').textContent = getOfferType(firstElement.offer.type);
-dialogPanel.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + firstElement.offer.guests + ' гостей в ' + firstElement.offer.rooms + ' комнатах';
-dialogPanel.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + firstElement.offer.checkin + ', выезд до ' + firstElement.offer.checkout;
-dialogPanel.querySelector('.lodge__features').innerHTML = getOfferFeatures();
-dialogPanel.querySelector('.lodge__description').textContent = firstElement.offer.description;
+dialogPanel.querySelector('.lodge__title').textContent = selectedAppartments.offer.title;
+dialogPanel.querySelector('.lodge__address').textContent = selectedAppartments.offer.address;  
+//dialogPanel.querySelector('.lodge__price').innerHTML = selectedAppartments.offer.price + ' &#x20bd;/ночь';
+dialogPanel.querySelector('.lodge__price').insertAdjacentHTML('afterbegin', selectedAppartments.offer.price + ' &#x20bd;/ночь');
+dialogPanel.querySelector('.lodge__type').textContent = getOfferType(selectedAppartments.offer.type);
+dialogPanel.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + selectedAppartments.offer.guests + ' гостей в ' + selectedAppartments.offer.rooms + ' комнатах';
+dialogPanel.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + selectedAppartments.offer.checkin + ', выезд до ' + selectedAppartments.offer.checkout;
+dialogPanel.querySelector('.lodge__features').appendChild(getOfferFeatures());
+dialogPanel.querySelector('.lodge__description').textContent = selectedAppartments.offer.description;
 
 var dialogTitle = document.querySelector('.dialog__title');
-var dialogAvatar = dialogTitle.getElementsByTagName('img');
-dialogAvatar.setAttribute('src',firstElement.author.avatar);
+var dialogAvatar = dialogTitle.children[0];
+dialogAvatar.setAttribute('src',selectedAppartments.author.avatar);
 
 var offerDialog = document.getElementById('offer-dialog');
 offerDialog.replaceChild(dialogPanel, offerDialog.querySelector('.dialog__panel'));
