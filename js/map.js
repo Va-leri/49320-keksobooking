@@ -38,7 +38,9 @@ var featuresList = [
 ];
 var appartments = [];
 var createAppartmentsList = function () {
-  var i, j, k;
+  var i;
+  var j;
+  var k;
   for (i = 0; i < offerTitles.length; i++) {
     appartments[i] = {
       'author': {
@@ -57,7 +59,7 @@ var createAppartmentsList = function () {
         'description': '',
         'photos': []
       },
-      'location' : {
+      'location': {
         'x': getRandomInteger(300, 900),
         'y': getRandomInteger(100, 500)
       }
@@ -67,7 +69,8 @@ var createAppartmentsList = function () {
       appartments[i].offer.features[j] = featuresList[k];
     }
   }
-}();
+};
+createAppartmentsList();
 var setPins = function () {
   var i;
   var fragment = document.createDocumentFragment();
@@ -81,23 +84,23 @@ var setPins = function () {
   }
   pinTemplate.setAttribute('style', 'display: none;');
   document.querySelector('.tokyo__pin-map').appendChild(fragment);
-}();
-
+};
+setPins();
 var dialogTemplate = document.querySelector('#lodge-template').content;
 var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true);
 var selectedAppartments = appartments[0];
 
 var getOfferType = function (type) {
   switch (type) {
-  case 'flat':
-    type = 'квартира';
-    break;
-  case 'bungalo':
-    type = 'бунгало';
-    break;
-  case 'house':
-    type = 'дом';
-    break;
+    case 'flat':
+      type = 'квартира';
+      break;
+    case 'bungalo':
+      type = 'бунгало';
+      break;
+    case 'house':
+      type = 'дом';
+      break;
   }
   return type;
 };
