@@ -93,16 +93,12 @@ var selectedAppartments = appartments[0];
 var getOfferType = function (type) {
   switch (type) {
     case 'flat':
-      type = 'квартира';
-      break;
+      return 'квартира';
     case 'bungalo':
-      type = 'бунгало';
-      break;
+      return 'бунгало';
     case 'house':
-      type = 'дом';
-      break;
+      return 'дом';
   }
-  return type;
 };
 
 var featuresFragment = document.createDocumentFragment();
@@ -118,18 +114,21 @@ var getOfferFeatures = function () {
   return featuresFragment;
 };
 
-dialogPanel.querySelector('.lodge__title').textContent = selectedAppartments.offer.title;
-dialogPanel.querySelector('.lodge__address').textContent = selectedAppartments.offer.address;
-dialogPanel.querySelector('.lodge__price').insertAdjacentHTML('afterbegin', selectedAppartments.offer.price + ' &#x20bd;/ночь');
-dialogPanel.querySelector('.lodge__type').textContent = getOfferType(selectedAppartments.offer.type);
-dialogPanel.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + selectedAppartments.offer.guests + ' гостей в ' + selectedAppartments.offer.rooms + ' комнатах';
-dialogPanel.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + selectedAppartments.offer.checkin + ', выезд до ' + selectedAppartments.offer.checkout;
-dialogPanel.querySelector('.lodge__features').appendChild(getOfferFeatures());
-dialogPanel.querySelector('.lodge__description').textContent = selectedAppartments.offer.description;
+var renderOfferDetails = function () {
+  dialogPanel.querySelector('.lodge__title').textContent = selectedAppartments.offer.title;
+  dialogPanel.querySelector('.lodge__address').textContent = selectedAppartments.offer.address;
+  dialogPanel.querySelector('.lodge__price').insertAdjacentHTML('afterbegin', selectedAppartments.offer.price + ' &#x20bd;/ночь');
+  dialogPanel.querySelector('.lodge__type').textContent = getOfferType(selectedAppartments.offer.type);
+  dialogPanel.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + selectedAppartments.offer.guests + ' гостей в ' + selectedAppartments.offer.rooms + ' комнатах';
+  dialogPanel.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + selectedAppartments.offer.checkin + ', выезд до ' + selectedAppartments.offer.checkout;
+  dialogPanel.querySelector('.lodge__features').appendChild(getOfferFeatures());
+  dialogPanel.querySelector('.lodge__description').textContent = selectedAppartments.offer.description;
 
-var dialogTitle = document.querySelector('.dialog__title');
-var dialogAvatar = dialogTitle.children[0];
-dialogAvatar.setAttribute('src', selectedAppartments.author.avatar);
+  var dialogTitle = document.querySelector('.dialog__title');
+  var dialogAvatar = dialogTitle.children[0];
+  dialogAvatar.setAttribute('src', selectedAppartments.author.avatar);
 
-var offerDialog = document.getElementById('offer-dialog');
-offerDialog.replaceChild(dialogPanel, offerDialog.querySelector('.dialog__panel'));
+  var offerDialog = document.getElementById('offer-dialog');
+  offerDialog.replaceChild(dialogPanel, offerDialog.querySelector('.dialog__panel'));
+};
+renderOfferDetails();
