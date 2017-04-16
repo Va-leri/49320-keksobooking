@@ -86,6 +86,7 @@ var setPins = function () {
   document.querySelector('.tokyo__pin-map').appendChild(fragment);
 };
 setPins();
+
 var dialogTemplate = document.querySelector('#lodge-template').content;
 var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true);
 var selectedAppartments = appartments[0];
