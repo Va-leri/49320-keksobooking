@@ -92,14 +92,19 @@ var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true)
 var selectedAppartments = appartments[0];
 
 var getOfferType = function (type) {
+  var typeRus;
   switch (type) {
     case 'flat':
-      return 'квартира';
+      typeRus = 'квартира';
+      break;
     case 'bungalo':
-      return 'бунгало';
+      typeRus = 'бунгало';
+      break;
     case 'house':
-      return 'дом';
-    }
+      typeRus = 'дом';
+      break;
+  }
+  return typeRus;
 };
 
 var featuresFragment = document.createDocumentFragment();
