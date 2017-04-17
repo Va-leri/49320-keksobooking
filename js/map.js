@@ -71,6 +71,8 @@ var createAppartmentsList = function () {
   }
 };
 createAppartmentsList();
+
+// Отрисовка меток на карте
 var setPins = function () {
   var i;
   var fragment = document.createDocumentFragment();
@@ -87,10 +89,13 @@ var setPins = function () {
 };
 setPins();
 
+//Создание диалоговой панели по шаблону
 var dialogTemplate = document.querySelector('#lodge-template').content;
 var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true);
-var selectedAppartments = appartments[0];
 
+//Установка выбранного объявления
+var selectedAppartments = appartments[0];
+//Функия подстановки типа жилья
 var getOfferType = function (type) {
   var typeRus;
   switch (type) {
@@ -106,7 +111,7 @@ var getOfferType = function (type) {
   }
   return typeRus;
 };
-
+//Функция вставки иконок удобств жилья
 var featuresFragment = document.createDocumentFragment();
 var feature;
 var getOfferFeatures = function () {
@@ -120,6 +125,7 @@ var getOfferFeatures = function () {
   return featuresFragment;
 };
 
+//Заполнение диалоговой панели подробностей выбранных аппартаментов
 var renderOfferDetails = function () {
   dialogPanel.querySelector('.lodge__title').textContent = selectedAppartments.offer.title;
   dialogPanel.querySelector('.lodge__address').textContent = selectedAppartments.offer.address;
@@ -129,12 +135,42 @@ var renderOfferDetails = function () {
   dialogPanel.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + selectedAppartments.offer.checkin + ', выезд до ' + selectedAppartments.offer.checkout;
   dialogPanel.querySelector('.lodge__features').appendChild(getOfferFeatures());
   dialogPanel.querySelector('.lodge__description').textContent = selectedAppartments.offer.description;
-
+  //Вставка аватара автора объявления
   var dialogTitle = document.querySelector('.dialog__title');
   var dialogAvatar = dialogTitle.children[0];
   dialogAvatar.setAttribute('src', selectedAppartments.author.avatar);
-
+  //Замена диалоговой панели на актуальную
   var offerDialog = document.getElementById('offer-dialog');
   offerDialog.replaceChild(dialogPanel, offerDialog.querySelector('.dialog__panel'));
 };
 renderOfferDetails();
+
+//по нажатию на любой из элементов .pin ему добавляется класс pin--active
+// открывается диалоговое окно
+var pinsList = document.querySelectorAll('.pin');
+var dialog = document.querySelector('.dialog');
+var activePin;
+for (var i = 0; i < pinsList.length; i++) {
+  pinsList[i].addEventListener('click', function() {
+    activePin = document.querySelector('.pin--active');
+    if (activePin != null) {
+      activePin.classList.remove('pin--active');
+    }
+    this.classList.add('pin--active');
+    dialog.classList.remove('hidden');
+    window.addEventListener('keydown', function(evt) {
+      if (evt.keyCode === 27) {
+        dialog.classList.add('hidden');
+        //document.querySelector('.pin--active').classList.remove('pin--active');
+      }  
+    });
+  });
+};
+// по нажатию на элемент .dialog__close диалоговое окно закрывается, у метки убирается класс pin--active
+dialog.querySelector('.dialog__close').addEventListener('click', function() {
+  dialog.classList.add('hidden');
+  document.querySelector('.pin--active').classList.remove('pin--active');
+});
+// по нажатию на Esc диалоговое окно закрывается, у метки убирается класс pin--active
+
+
