@@ -73,6 +73,7 @@ var createAppartmentsList = function () {
 createAppartmentsList();
 
 // Отрисовка меток на карте
+var pinsList = [];
 var setPins = function () {
   var i;
   var fragment = document.createDocumentFragment();
@@ -80,6 +81,8 @@ var setPins = function () {
   for (i = 0; i < offerTitles.length; i++) {
     var pin = pinTemplate.cloneNode(true);
     pin.setAttribute('style', 'left: ' + (appartments[i].location.x - 75 / 2) + 'px; top: ' + (appartments[i].location.y - 94) + 'px');
+    pin.setAttribute('id', i);
+    pinsList[i] = pin;
     var avatar = pin.querySelector('img');
     avatar.setAttribute('src', appartments[i].author.avatar);
     fragment.appendChild(pin);
@@ -95,6 +98,7 @@ var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true)
 
 //Установка выбранного объявления
 var selectedAppartments = appartments[0];
+
 //Функия подстановки типа жилья
 var getOfferType = function (type) {
   var typeRus;
@@ -145,32 +149,59 @@ var renderOfferDetails = function () {
 };
 renderOfferDetails();
 
-//по нажатию на любой из элементов .pin ему добавляется класс pin--active
+//по нажатию на любой из элементов .pin ему добавляется класс .pin--active
 // открывается диалоговое окно
-var pinsList = document.querySelectorAll('.pin');
+//var pinsList = document.querySelectorAll('.pin');
 var dialog = document.querySelector('.dialog');
 var activePin;
+//Обработчик клика на .pin
+/*var pinClickHandler = function () {
+  activePin = document.querySelector('.pin--active');
+  if (activePin !== null) {
+    activePin.classList.remove('pin--active');
+  }
+  activePin = this.classList.add('pin--active');
+  dialog.classList.remove('hidden');
+};*/
+
 for (var i = 0; i < pinsList.length; i++) {
-  pinsList[i].addEventListener('click', function() {
+  pinsList[i].addEventListener('click', function () {
     activePin = document.querySelector('.pin--active');
-    if (activePin != null) {
+    if (activePin !== null) {
       activePin.classList.remove('pin--active');
     }
-    this.classList.add('pin--active');
+    activePin = this.classList.add('pin--active');
     dialog.classList.remove('hidden');
-    window.addEventListener('keydown', function(evt) {
-      if (evt.keyCode === 27) {
-        dialog.classList.add('hidden');
-        //document.querySelector('.pin--active').classList.remove('pin--active');
-      }  
-    });
+  });
+  pinsList[i].addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 13) {
+      activePin = document.querySelector('.pin--active');
+      if (activePin !== null) {
+        activePin.classList.remove('pin--active');
+      }
+      activePin = this.classList.add('pin--active');
+      dialog.classList.remove('hidden');
+    }
   });
 };
-// по нажатию на элемент .dialog__close диалоговое окно закрывается, у метки убирается класс pin--active
-dialog.querySelector('.dialog__close').addEventListener('click', function() {
-  dialog.classList.add('hidden');
-  document.querySelector('.pin--active').classList.remove('pin--active');
-});
-// по нажатию на Esc диалоговое окно закрывается, у метки убирается класс pin--active
 
+// по нажатию на элемент .dialog__close диалоговое окно закрывается, у метки убирается класс pin--active
+dialog.querySelector('.dialog__close').addEventListener('click', function () {
+  closeDialog();
+})
+
+// функция закрытия диалога
+var closeDialog = function() {
+    dialog.classList.add('hidden');
+    activePin = document.querySelector('.pin--active');
+    activePin.classList.remove('pin--active');
+};
+
+window.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 27) {
+    if (dialog.classList.contains('hidden') === false) {
+      closeDialog();
+    } 
+  }
+});
 
