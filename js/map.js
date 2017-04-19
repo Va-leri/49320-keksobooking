@@ -97,7 +97,7 @@ var dialogTemplate = document.querySelector('#lodge-template').content;
 var dialogPanel = dialogTemplate.querySelector('.dialog__panel').cloneNode(true);
 
 //Установка выбранного объявления
-var selectedAppartments = appartments[0];
+var selectedAppartments;
 
 //Функия подстановки типа жилья
 var getOfferType = function (type) {
@@ -133,10 +133,11 @@ var getOfferFeatures = function () {
 var renderOfferDetails = function () {
   dialogPanel.querySelector('.lodge__title').textContent = selectedAppartments.offer.title;
   dialogPanel.querySelector('.lodge__address').textContent = selectedAppartments.offer.address;
-  dialogPanel.querySelector('.lodge__price').insertAdjacentHTML('afterbegin', selectedAppartments.offer.price + ' &#x20bd;/ночь');
+  dialogPanel.querySelector('.lodge__price').innerHTML = selectedAppartments.offer.price + ' &#x20bd;/ночь';
   dialogPanel.querySelector('.lodge__type').textContent = getOfferType(selectedAppartments.offer.type);
   dialogPanel.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + selectedAppartments.offer.guests + ' гостей в ' + selectedAppartments.offer.rooms + ' комнатах';
   dialogPanel.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + selectedAppartments.offer.checkin + ', выезд до ' + selectedAppartments.offer.checkout;
+  dialogPanel.querySelector('.lodge__features').innerHTML = '';
   dialogPanel.querySelector('.lodge__features').appendChild(getOfferFeatures());
   dialogPanel.querySelector('.lodge__description').textContent = selectedAppartments.offer.description;
   //Вставка аватара автора объявления
@@ -147,24 +148,40 @@ var renderOfferDetails = function () {
   var offerDialog = document.getElementById('offer-dialog');
   offerDialog.replaceChild(dialogPanel, offerDialog.querySelector('.dialog__panel'));
 };
-renderOfferDetails();
+
 
 //по нажатию на любой из элементов .pin ему добавляется класс .pin--active
 // открывается диалоговое окно
 //var pinsList = document.querySelectorAll('.pin');
 var dialog = document.querySelector('.dialog');
 var activePin;
+var id;
 //Обработчик клика на .pin
-/*var pinClickHandler = function () {
+var pinClickHandler = function (pin) {
   activePin = document.querySelector('.pin--active');
   if (activePin !== null) {
     activePin.classList.remove('pin--active');
   }
-  activePin = this.classList.add('pin--active');
+  activePin = pin.classList.add('pin--active');
+  id = pin.getAttribute('id');
+  selectedAppartments = appartments[id];
   dialog.classList.remove('hidden');
-};*/
-
+  renderOfferDetails();
+};
+//Добавляем обработчик открытия окна диалога
 for (var i = 0; i < pinsList.length; i++) {
+  pinsList[i].addEventListener('click', function () {
+    pinClickHandler(this);
+    });
+  pinsList[i].addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 13) {
+      pinClickHandler(this);
+    }
+  })
+};
+
+
+/*for (var i = 0; i < pinsList.length; i++) {
   pinsList[i].addEventListener('click', function () {
     activePin = document.querySelector('.pin--active');
     if (activePin !== null) {
@@ -183,7 +200,7 @@ for (var i = 0; i < pinsList.length; i++) {
       dialog.classList.remove('hidden');
     }
   });
-};
+};*/
 
 // по нажатию на элемент .dialog__close диалоговое окно закрывается, у метки убирается класс pin--active
 dialog.querySelector('.dialog__close').addEventListener('click', function () {
