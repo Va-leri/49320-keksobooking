@@ -86,12 +86,12 @@ var setPins = function () {
     var avatar = pin.querySelector('img');
     avatar.setAttribute('src', appartments[i].author.avatar);
     fragment.appendChild(pin);
-    pinsList[i].addEventListener('click', function () {
-      pinClickHandler(this);
+    pinsList[i].addEventListener('click', function (evt) {
+      pinClickHandler(evt.currentTarget);
     });
     pinsList[i].addEventListener('keydown', function (evt) {
       if (evt.keyCode === 13) {
-        pinClickHandler(this);
+        pinClickHandler(evt.currentTarget);
       }
     });
   }
@@ -181,17 +181,6 @@ var pinClickHandler = function (pin) {
   dialog.classList.remove('hidden');
   renderOfferDetails();
 };
-// Добавляем обработчик открытия окна диалога
-/* for (var i = 0; i < pinsList.length; i++) {
-  pinsList[i].addEventListener('click', function () {
-    pinClickHandler(this);
-  });
-  pinsList[i].addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 13) {
-      pinClickHandler(this);
-    }
-  });
-}*/
 
 // по нажатию на элемент .dialog__close диалоговое окно закрывается, у метки убирается класс pin--active
 var dialogCloseButton = dialog.querySelector('.dialog__close');
