@@ -86,6 +86,14 @@ var setPins = function () {
     var avatar = pin.querySelector('img');
     avatar.setAttribute('src', appartments[i].author.avatar);
     fragment.appendChild(pin);
+    pinsList[i].addEventListener('click', function () {
+      pinClickHandler(this);
+    });
+    pinsList[i].addEventListener('keydown', function (evt) {
+      if (evt.keyCode === 13) {
+        pinClickHandler(this);
+      }
+    });
   }
   pinTemplate.setAttribute('style', 'display: none;');
   document.querySelector('.tokyo__pin-map').appendChild(fragment);
@@ -101,19 +109,19 @@ var selectedAppartments;
 
 // Функия подстановки типа жилья
 var getOfferType = function (type) {
-  var typeRus;
+  var typeInRussian;
   switch (type) {
     case 'flat':
-      typeRus = 'квартира';
+      typeInRussian = 'квартира';
       break;
     case 'bungalo':
-      typeRus = 'бунгало';
+      typeInRussian = 'бунгало';
       break;
     case 'house':
-      typeRus = 'дом';
+      typeInRussian = 'дом';
       break;
   }
-  return typeRus;
+  return typeInRussian;
 };
 // Функция вставки иконок удобств жилья
 var featuresFragment = document.createDocumentFragment();
@@ -155,21 +163,26 @@ var renderOfferDetails = function () {
 // var pinsList = document.querySelectorAll('.pin');
 var dialog = document.querySelector('.dialog');
 var activePin;
-var id;
-// Обработчик клика на .pin
-var pinClickHandler = function (pin) {
+var pinId;
+// Функция деактивации активного .pin
+var deactivateActivePin = function () {
   activePin = document.querySelector('.pin--active');
   if (activePin !== null) {
     activePin.classList.remove('pin--active');
   }
+};
+
+// Обработчик клика на .pin
+var pinClickHandler = function (pin) {
+  deactivateActivePin();
   activePin = pin.classList.add('pin--active');
-  id = pin.getAttribute('id');
-  selectedAppartments = appartments[id];
+  pinId = pin.getAttribute('id');
+  selectedAppartments = appartments[pinId];
   dialog.classList.remove('hidden');
   renderOfferDetails();
 };
 // Добавляем обработчик открытия окна диалога
-for (var i = 0; i < pinsList.length; i++) {
+/* for (var i = 0; i < pinsList.length; i++) {
   pinsList[i].addEventListener('click', function () {
     pinClickHandler(this);
   });
@@ -178,40 +191,18 @@ for (var i = 0; i < pinsList.length; i++) {
       pinClickHandler(this);
     }
   });
-}
-
-
-/* for (var i = 0; i < pinsList.length; i++) {
-  pinsList[i].addEventListener('click', function () {
-    activePin = document.querySelector('.pin--active');
-    if (activePin !== null) {
-      activePin.classList.remove('pin--active');
-    }
-    activePin = this.classList.add('pin--active');
-    dialog.classList.remove('hidden');
-  });
-  pinsList[i].addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 13) {
-      activePin = document.querySelector('.pin--active');
-      if (activePin !== null) {
-        activePin.classList.remove('pin--active');
-      }
-      activePin = this.classList.add('pin--active');
-      dialog.classList.remove('hidden');
-    }
-  });
-};*/
+}*/
 
 // по нажатию на элемент .dialog__close диалоговое окно закрывается, у метки убирается класс pin--active
-dialog.querySelector('.dialog__close').addEventListener('click', function () {
+var dialogCloseButton = dialog.querySelector('.dialog__close');
+dialogCloseButton.addEventListener('click', function () {
   closeDialog();
 });
 
 // функция закрытия диалога
 var closeDialog = function () {
   dialog.classList.add('hidden');
-  activePin = document.querySelector('.pin--active');
-  activePin.classList.remove('pin--active');
+  deactivateActivePin();
 };
 
 window.addEventListener('keydown', function (evt) {
@@ -220,5 +211,73 @@ window.addEventListener('keydown', function (evt) {
       closeDialog();
     }
   }
+});
+
+// Поиск элементов формы:
+var timeField = document.getElementById('time');
+var timeoutField = document.getElementById('timeout');
+var typeField = document.getElementById('type');
+var priceField = document.getElementById('price');
+var formSubmitButton = document.querySelector('.form__submit');
+
+// Функция соответствия времени выезда времени заезда
+var setCheckoutTime = function () {
+  timeoutField.selectedIndex = timeField.selectedIndex;
+};
+// Обработка клика на time
+timeField.addEventListener('click', function () {
+  setCheckoutTime();
+});
+
+// Установка минимальной цены в зависимости от выбранного типа жилья
+var setMinPrice = function () {
+  var i = typeField.selectedIndex;
+  var selectedType = typeField.children[i].value;
+  switch (selectedType) {
+    case 'hut' :
+      priceField.setAttribute('min', '0');
+      break;
+    case 'flat' :
+      priceField.setAttribute('min', '1000');
+      break;
+    case 'palace' :
+      priceField.setAttribute('min', '10000');
+      break;
+  }
+};
+
+typeField.addEventListener('click', function () {
+  setMinPrice();
+});
+
+var roomNumberField = document.getElementById('room_number');
+var guestsNumberField = document.getElementById('capacity');
+var setGuestsNumber = function () {
+  var i = roomNumberField.selectedIndex;
+  var roomNumber = roomNumberField.children[i].value;
+  var j = guestsNumberField.selectedIndex;
+  var guestsNumberOption = guestsNumberField.children[j];
+  var guestsNumber = guestsNumberOption.value;
+  if ((roomNumber === '2' || roomNumber === '100') && (guestsNumber !== '3')) {
+    guestsNumberOption.removeAttribute('selected');
+    for (j = 0; j < guestsNumberField.length; j++) {
+      if (guestsNumberField.children[j].value === '3') {
+        guestsNumberField.selectedIndex = j;
+      }
+    }
+  } else if ((roomNumber === '1') && (guestsNumber !== '0')) {
+    for (j = 0; j < guestsNumberField.length; j++) {
+      if (guestsNumberField.children[j].value === '0') {
+        guestsNumberField.selectedIndex = j;
+      }
+    }
+  }
+};
+roomNumberField.addEventListener('click', function () {
+  setGuestsNumber();
+});
+
+formSubmitButton.addEventListener('click', function () {
+  document.querySelector('.notice__form').reset();
 });
 
