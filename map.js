@@ -73,7 +73,6 @@ var createAppartmentsList = function () {
 createAppartmentsList();
 
 // Отрисовка меток на карте
-var pinsList = [];
 var setPins = function () {
   var i;
   var fragment = document.createDocumentFragment();
@@ -82,14 +81,13 @@ var setPins = function () {
     var pin = pinTemplate.cloneNode(true);
     pin.setAttribute('style', 'left: ' + (appartments[i].location.x - 75 / 2) + 'px; top: ' + (appartments[i].location.y - 94) + 'px');
     pin.setAttribute('id', i);
-    pinsList[i] = pin;
     var avatar = pin.querySelector('img');
     avatar.setAttribute('src', appartments[i].author.avatar);
     fragment.appendChild(pin);
-    pinsList[i].addEventListener('click', function (evt) {
+    pin.addEventListener('click', function (evt) {
       pinClickHandler(evt.currentTarget);
     });
-    pinsList[i].addEventListener('keydown', function (evt) {
+    pin.addEventListener('keydown', function (evt) {
       if (evt.keyCode === 13) {
         pinClickHandler(evt.currentTarget);
       }
@@ -160,7 +158,6 @@ var renderOfferDetails = function () {
 
 // по нажатию на любой из элементов .pin ему добавляется класс .pin--active
 // открывается диалоговое окно
-// var pinsList = document.querySelectorAll('.pin');
 var dialog = document.querySelector('.dialog');
 var activePin;
 var pinId;
@@ -211,7 +208,7 @@ var formSubmitButton = document.querySelector('.form__submit');
 
 // Функция соответствия времени выезда времени заезда
 var setCheckoutTime = function () {
-  timeoutField.selectedIndex = timeField.selectedIndex;
+  timeoutField.value = timeField.value;
 };
 // Обработка клика на time
 timeField.addEventListener('click', function () {
@@ -220,17 +217,19 @@ timeField.addEventListener('click', function () {
 
 // Установка минимальной цены в зависимости от выбранного типа жилья
 var setMinPrice = function () {
-  var i = typeField.selectedIndex;
-  var selectedType = typeField.children[i].value;
-  switch (selectedType) {
+  var type = typeField.value;
+  switch (type) {
     case 'hut' :
-      priceField.setAttribute('min', '0');
+      priceField.min = '0';
+      priceField.value = '0';
       break;
     case 'flat' :
-      priceField.setAttribute('min', '1000');
+      priceField.min = '1000';
+      priceField.value = '1000';
       break;
     case 'palace' :
-      priceField.setAttribute('min', '10000');
+      priceField.min = '10000';
+      priceField.value = '10000';
       break;
   }
 };
@@ -241,32 +240,45 @@ typeField.addEventListener('click', function () {
 
 var roomNumberField = document.getElementById('room_number');
 var guestsNumberField = document.getElementById('capacity');
+var roomNumber;
+var guestsNumber;
+
 var setGuestsNumber = function () {
-  var i = roomNumberField.selectedIndex;
-  var roomNumber = roomNumberField.children[i].value;
-  var j = guestsNumberField.selectedIndex;
-  var guestsNumberOption = guestsNumberField.children[j];
-  var guestsNumber = guestsNumberOption.value;
-  if ((roomNumber === '2' || roomNumber === '100') && (guestsNumber !== '3')) {
-    guestsNumberOption.removeAttribute('selected');
-    for (j = 0; j < guestsNumberField.length; j++) {
-      if (guestsNumberField.children[j].value === '3') {
-        guestsNumberField.selectedIndex = j;
-      }
-    }
-  } else if ((roomNumber === '1') && (guestsNumber !== '0')) {
-    for (j = 0; j < guestsNumberField.length; j++) {
-      if (guestsNumberField.children[j].value === '0') {
-        guestsNumberField.selectedIndex = j;
-      }
-    }
+  roomNumber = roomNumberField.value;
+  guestsNumber = guestsNumberField.value;
+  if (roomNumber === '2' || roomNumber === '100') {
+    guestsNumberField.value = '3';
+  } else {
+    guestsNumberField.value = '0';
   }
 };
+setGuestsNumber();
 roomNumberField.addEventListener('click', function () {
   setGuestsNumber();
 });
 
-formSubmitButton.addEventListener('click', function () {
-  document.querySelector('.notice__form').reset();
+var setRoomsNumber = function () {
+  roomNumber = roomNumberField.value;
+  guestsNumber = guestsNumberField.value;
+  if (guestsNumber === '3' && roomNumber !== '2' &&  roomNumber !== '100') {
+    roomNumberField.value = '2';
+  } else if (guestsNumber === '0' && roomNumber!== '1') {
+    roomNumberField.value = '1';
+  }
+};
+
+guestsNumberField.addEventListener('click', function () {
+  setRoomsNumber();
 });
 
+var noticeForm = document.querySelector('.notice__form');
+
+var submitHandler = function (evt) {
+  noticeForm.reset();
+};
+
+noticeForm.addEventListener('submit', submitHandler);
+
+noticeForm.addEventListener('invalid', function (evt) {
+  evt.target.classList.add('invalid');
+}, true);
