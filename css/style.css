@@ -659,3 +659,7 @@ select option:hover {
 .hidden {
     display: none;
 }
+
+.invalid {
+  box-shadow: 0 0 4px 1px #ff6547;
+}
