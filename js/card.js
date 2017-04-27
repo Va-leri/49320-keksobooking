@@ -75,9 +75,9 @@ window.card = (function () {
         window.pin.deactivatePin();
       }
     }
-  })
+  });
   return {
     dialog: dialog,
     renderOfferDetails: renderOfferDetails
-  }
+  };
 })();

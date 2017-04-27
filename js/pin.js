@@ -25,7 +25,8 @@ window.pin = (function () {
     }
     pinTemplate.setAttribute('style', 'display: none;');
     document.querySelector('.tokyo__pin-map').appendChild(fragment);
-  }();
+  };
+  setPins();
   var activePin;
   var pinId;
   var selectedAppartments;
@@ -43,7 +44,6 @@ window.pin = (function () {
   var pinClickHandler = function (pin) {
     deactivatePin();
     activatePin(pin);
-    //activePin = pin.classList.add('pin--active');
     pinId = pin.getAttribute('id');
     selectedAppartments = window.data.appartments[pinId];
     window.card.dialog.classList.remove('hidden');
@@ -53,5 +53,5 @@ window.pin = (function () {
     deactivatePin: deactivatePin,
     activatePin: activatePin,
     selectedApparments: selectedAppartments
-  }
+  };
 })();

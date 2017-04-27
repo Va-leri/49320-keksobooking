@@ -6,7 +6,6 @@
   var timeoutField = document.getElementById('timeout');
   var typeField = document.getElementById('type');
   var priceField = document.getElementById('price');
-  var formSubmitButton = document.querySelector('.form__submit');
 
   // Функция соответствия времени выезда времени заезда
   var setTime = function (referenceTime, variableTime) {
@@ -14,11 +13,11 @@
   };
   // Обработка клика на time
   timeField.addEventListener('click', function () {
-    setTime (timeField, timeoutField);
+    setTime(timeField, timeoutField);
   });
   // Обработка клика на timeout
   timeoutField.addEventListener('click', function () {
-    setTime (timeoutField, timeField);
+    setTime(timeoutField, timeField);
   });
 
   // Установка минимальной цены в зависимости от выбранного типа жилья
@@ -65,9 +64,9 @@
   var setRoomsNumber = function () {
     roomNumber = roomNumberField.value;
     guestsNumber = guestsNumberField.value;
-    if (guestsNumber === '3' && roomNumber !== '2' &&  roomNumber !== '100') {
+    if (guestsNumber === '3' && roomNumber !== '2' && roomNumber !== '100') {
       roomNumberField.value = '2';
-    } else if (guestsNumber === '0' && roomNumber!== '1') {
+    } else if (guestsNumber === '0' && roomNumber !== '1') {
       roomNumberField.value = '1';
     }
   };

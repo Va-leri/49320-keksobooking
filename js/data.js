@@ -1,6 +1,6 @@
 // data.js
+'use strict';
 window.data = (function () {
-  'use strict';
   var getRandomInteger = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
@@ -75,5 +75,5 @@ window.data = (function () {
   return {
     appartments: appartments,
     offerTitles: offerTitles
-  }
+  };
 })();
